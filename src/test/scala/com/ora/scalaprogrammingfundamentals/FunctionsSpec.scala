@@ -2,17 +2,19 @@ package com.ora.scalaprogrammingfundamentals
 
 import org.scalatest.{FunSuite, Matchers}
 
+//dhinojosa@evolutionnext.com
+
 class FunctionsSpec extends FunSuite with Matchers {
   test(
     """As a reminder from all those that took the beginner's course,
       |  a function really is an anonymous
       |  instantiation of a trait.""".stripMargin) {
 
-    val f = new Function[String, Int] {
-      override def apply(v1: String): Int = v1.length
+    val f = new Function[CharSequence, AnyVal] {
+      override def apply(v1: CharSequence): AnyVal = v1.length
     }
 
-    f.apply("Hello") should be(5)
+    f("Hello") should be(5)
   }
 
   test("The above can be whittled down to the following:") {
@@ -50,9 +52,11 @@ class FunctionsSpec extends FunSuite with Matchers {
   test(
     """A closure is a function that will "wrap" or "close"
       |  around an outside value.""".stripMargin) {
-    val i = 3
-    val f = (x: Int) => x + i
-    Vector(1, 2, 3).map(f) should contain inOrder(4, 5, 6)
+    def createFunction(i:Int): Int => Int = {
+      (x: Int) => x + i
+    }
+
+    Vector(1, 2, 3).map(createFunction(5)) should contain inOrder(6, 7, 8)
   }
 
   test(
@@ -60,6 +64,9 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  is called currying. Currying will break a function of one or
       |  more arguments into parts so that they can be applied
       |  partially""".stripMargin) {
+
+    def foo(f:Int => Int) = f(40)
+
     val f: (Int, Int, Int) => Int = (x: Int, y: Int, z: Int) => x + y + z
     val fc: Int => Int => Int => Int = f.curried
     val f1: Int => Int => Int = fc(3)
@@ -78,12 +85,11 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
-    val tupleFirst = (t: (String, Int)) => t._1
+    val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = getFirstThreeLetters
-      .compose(tupleFirst)
-    newFunction.apply("Fellow", 100) should be("Fel")
+    val newFunction: ((String, Int)) => String = getFirstThreeLetters.compose(tupleFirst)
+    newFunction("Fellow" -> 100) should be("Fel")
   }
 
   test(
@@ -94,17 +100,53 @@ class FunctionsSpec extends FunSuite with Matchers {
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = tupleFirst
-      .andThen(getFirstThreeLetters)
+    val newFunction: ((String, Int)) => String = tupleFirst.andThen(getFirstThreeLetters)
     newFunction.apply("Fellow", 100) should be("Fel")
   }
 
   test(
     """map will apply the given function on all elements of a
       |  Traversable and return a new collection of the result.""") {
-    val set = Set(1, 3, 4, 6)
-    val result = set.map(_ * 4)
-    result.last should be(List(4, 12, 16, 24))
+    val vector = Vector(1, 3, 4, 6)
+    val result = vector.map(x => x * 4)
+    result should be(List(4, 12, 16, 24)) //4
+  }
+
+  test(
+    """map can be applied to a Stream""") {
+    Stream
+      .from(1, 2)
+      .map(x => x * 5)
+      .take(4)
+      .toVector should contain inOrder(5, 15, 25, 35)
+  }
+
+  //Functor = map
+  //Applicative = None
+  //Monad = flatMap
+
+  test("Map in an Option") {
+    Some(10).map(x => x + 40) should be (Some(50))
+  }
+
+  test("Map on Map") {
+    val mapStructure = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
+    val result = mapStructure.map(t => t._1 + 100 -> t._2 + " Hundred")
+    result should contain (Map(100 -> "One Hundred"))
+  }
+
+  test("foldLeft") {
+    val result = List(1,2,3,4,5).foldLeft(1){(total, next) =>
+      println(s"total $total, next: $next")
+      total * next
+    }
+    result should be (120)
+  }
+
+  test("""reduce will collapse all elements of a collection using a function.
+         |  It will start the first element as the 'seed' or 'accumulation"""
+    .stripMargin) {
+    pending
   }
 
   test(
@@ -134,12 +176,6 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""mkString will create a string from a
       | collections elements, and offers multiple ways to do so""".stripMargin) {
-    pending
-  }
-
-  test("""reduce will collapse all elements of a collection using a function.
-      |  It will start the first element as the 'seed' or 'accumulation"""
-      .stripMargin) {
     pending
   }
 

@@ -81,17 +81,21 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       | but it will define all it's children and not one else will have the
       | ability to extend the number of children any further. All children
       | must be produced within the same file""".stripMargin) {
-    pending
+    val tree: Node[Int] = Node(Leaf(5), Leaf(10))
+    tree.left.asInstanceOf[Leaf[_]].value should be (5)
   }
 
   test(
-    """A popular sealed trait is Option[+T], Some[T], None, let's
+    """A popular sealed abstract class is Option[+T], Some[T], None, let's
       | take a look at the API and try it out""".stripMargin) {
-    pending
+    val samMiddleName:Option[String] = Some("Howard")
+    val dannoMiddleName:Option[String] = None
   }
 
+  //Union types
+
   test(
-    """A popular sealed trait is Also List[A], ::,
+    """A popular sealed abstract class is Also List[A], ::,
       |and Nil let's take a look at the API.""".stripMargin) {
     pending
   }
@@ -100,7 +104,13 @@ class SealedTraitsSpec extends FunSuite with Matchers {
     """Sealed traits is also a good idea for pattern matching
       | exhaustiveness. The compiler will be able to recognize the subclasses
       | of all sealed traits.""".stripMargin) {
-    pending
+     val a:Tree[Int] = Node(Leaf(5), Leaf(10))
+
+     a match {
+       case Empty => "Empty Tree"
+       case Leaf(x) => s"Leaf has value of $x"
+       case Node(left, right) => s"Node has value $left and $right"
+     }
   }
 
   test(

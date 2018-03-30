@@ -10,7 +10,8 @@ import scala.collection.mutable.ArrayBuffer
 class CollectionsSpec extends FunSuite with Matchers {
 
   /*
-   * For performance characteristics of each of the following collections, see:
+   * For performance characteristics of each of the
+   * following collections, see:
    * https://bit.ly/2pQPXRu
    */
 
@@ -20,8 +21,9 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  suited for lifo stack like patterns""".stripMargin) {
     val list = List.apply(40, 50, 60)
     val list2 = list :+ 70 //immutable
-    val list3 = list2 :+ 100
-    list3 should contain inOrder(40, 50, 60, 70, 100)
+    val list3 = 1 +: list2 :+ 100
+    list should contain inOrder(40, 50, 60)
+    list3 should contain inOrder(1, 40, 50, 60, 70, 100)
   }
 
   test("""To get the the 2nd element of the list we use apply.""") {
@@ -73,20 +75,19 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  The current default IndexedSeq is a Vector
       |  The current default LinearSeq is a List""".stripMargin) {
 
-    Seq.apply(30, 50, 100) shouldBe a[List[_]]
-    IndexedSeq.apply(30, 50, 100) shouldBe a[Vector[_]]
-    LinearSeq.apply(30, 50, 100) shouldBe a[List[_]]
+    Seq(30, 50, 100) shouldBe a[List[_]]
+    IndexedSeq(30, 50, 100) shouldBe a[Vector[_]]
+    LinearSeq(30, 50, 100) shouldBe a[List[_]]
   }
 
   test(
-    """A stream can be a finite or an infinite collection. The construction can
+    """A stream can be a finite or an infinite collection.
+      |  The construction can
       |  be done using recursion""".stripMargin) {
     def continuousEvens(): Stream[BigInt] = {
       def ce(n: BigInt): Stream[BigInt] = Stream.cons(n, ce(n + 2))
-
       ce(2)
     }
-
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
@@ -95,7 +96,6 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  #:: operator""".stripMargin) {
     def continuousEvens(): Stream[BigInt] = {
       def ce(n: BigInt): Stream[BigInt] = n #:: ce(n + 2)
-
       ce(2)
     }
 
@@ -136,7 +136,8 @@ class CollectionsSpec extends FunSuite with Matchers {
   test(
     """A Set is can also be a TreeSet.
       |  This will have logarithmic performance. It will win
-      |  generally in performance when you need to find the smallest element
+      |  generally in performance when you need to
+      |  find the smallest element
       |  of the set. As far as API is concerned
       |  you should expect no difference.""".stripMargin) {
     val set = TreeSet(1, 2, 3, 4, 5, 6, 8)
@@ -146,7 +147,7 @@ class CollectionsSpec extends FunSuite with Matchers {
   }
 
   test("""A Map is a collection of pairs, also known as Tuple2""".stripMargin) {
-    val map = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
+    val map = Map.apply(1 -> "One", 2 -> "Two", 3 -> "Three")
     map.get(2) should be(Some("Two"))
     val result = map + (4 -> "Four")
     result.get(4) should be(Some("Four"))
