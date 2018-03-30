@@ -8,24 +8,25 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   test("A trait is analogous to an interface in Java") {
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
-
       def decreaseSpeed(ms: Int): Vehicle
-
       def currentSpeedMetersPerHour: Int
     }
 
-    class Bicycle(val currentSpeedMetersPerHour: Int) extends Vehicle {
+    trait Fun
+    trait FreshAir
+
+    case class Bicycle(currentSpeedMetersPerHour: Int) extends Vehicle with Fun with FreshAir {
       override def increaseSpeed(ms: Int): Vehicle =
-        new Bicycle(currentSpeedMetersPerHour + ms)
+        this.copy(currentSpeedMetersPerHour + ms)
 
       override def decreaseSpeed(ms: Int): Vehicle =
-        new Bicycle(currentSpeedMetersPerHour - ms)
+        this.copy(currentSpeedMetersPerHour - ms)
     }
 
-    new Bicycle(1)
+    Bicycle(1)
       .increaseSpeed(3)
       .decreaseSpeed(1)
-      .currentSpeedMetersPerHour should be(3)
+      .currentSpeedMetersPerHour should be(3) //should is a ScalaTest
   }
 
   test(
@@ -33,9 +34,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  methods (known as default methods in Java)""".stripMargin) {
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
-
       def decreaseSpeed(ms: Int): Vehicle
-
       def currentSpeedMetersPerHour: Int
 
       final def currentSpeedMilesPerHour: Double =
@@ -68,6 +67,13 @@ class SealedTraitsSpec extends FunSuite with Matchers {
 
     o.entries should contain inOrder
       ("Sent one statement", "Sent two statements")
+
+    val o2 = new Object with Log
+    o2.log("Sent one statement 2")
+    o2.log("Sent two statements 2")
+
+    o2.entries should contain inOrder
+      ("Sent one statement 2", "Sent two statements 2")
   }
 
   test(
