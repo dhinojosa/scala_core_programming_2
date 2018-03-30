@@ -80,7 +80,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
 
   test(
     """A popular sealed trait is Option[+T], Some[T], None, let's
-      | take a look at the API.""".stripMargin) {
+      | take a look at the API and try it out""".stripMargin) {
     pending
   }
 
@@ -91,23 +91,17 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   }
 
   test(
-    """It is important to note that the children of a sealed trait are
-      |  subclassable, and would typically require a final modifier"""
-      .stripMargin) {
-    pending
-  }
-
-  test(
     """Sealed traits is also a good idea for pattern matching
       | exhaustiveness. The compiler will be able to recognize the subclasses
-      | of all sealed traits""".stripMargin) {
+      | of all sealed traits.""".stripMargin) {
     pending
   }
 
   test(
     """You can also have sealed abstract classes, which will operate under
       |  the same rules, the children must all be inside the same file,
-      |  and the children should be final.""".stripMargin) {
+      |  and the children should be final. Why would you choose
+      |  one over the other? You can multiple inherit a trait""".stripMargin) {
     pending
   }
 }
