@@ -102,6 +102,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  the same rules, the children must all be inside the same file,
       |  and the children should be final. Why would you choose
       |  one over the other? You can multiple inherit a trait""".stripMargin) {
+    //no code
     pending
   }
 }

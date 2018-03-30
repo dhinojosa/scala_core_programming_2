@@ -133,7 +133,9 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""mkString will create a string from a
-      | collections elements, and offers multiple ways to do so""".stripMargin)
+      | collections elements, and offers multiple ways to do so""".stripMargin) {
+    pending
+  }
 
   test("""reduce will collapse all elements of a collection using a function.
       |  It will start the first element as the 'seed' or 'accumulation"""
