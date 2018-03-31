@@ -110,10 +110,13 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  of all sealed traits.""".stripMargin) {
      val a:Tree[Int] = Node(Leaf(5), Leaf(10))
 
-     a match {
-       case Empty => "Empty Tree"
-       case Leaf(x) => s"Leaf has value of $x"
-       case Node(left, right) => s"Node has value $left and $right"
-     }
+    val result = a match {
+      case Empty => "Empty Tree"
+      case Leaf(x) => s"Leaf has value of $x"
+      case Node(Leaf(x), Leaf(y)) => s"Node has two leaves: $x and $y"
+      case Node(left, right) => s"Node has value $left and $right"
+    }
+
+    result should be ("Node has two leaves: 5 and 10")
   }
 }
