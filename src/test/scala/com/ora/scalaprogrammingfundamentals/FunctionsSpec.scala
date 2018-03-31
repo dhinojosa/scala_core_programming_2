@@ -106,16 +106,14 @@ class FunctionsSpec extends FunSuite with Matchers {
     newFunction.apply("Fellow", 100) should be("Fel")
   }
 
-  test(
-    """map will apply the given function on all elements of a
+  test("""map will apply the given function on all elements of a
       |  Traversable and return a new collection of the result.""") {
     val vector = Vector(1, 3, 4, 6)
     val result = vector.map(x => x * 4)
     result should be(List(4, 12, 16, 24)) //4
   }
 
-  test(
-    """map can be applied to a Stream""") {
+  test("""Map can be applied to a Stream, it is just another collection""") {
     Stream
       .from(1, 2)
       .map(x => x * 5)
@@ -127,8 +125,7 @@ class FunctionsSpec extends FunSuite with Matchers {
   //Applicative = None
   //Monad = flatMap
 
-  test(
-    """Map in an Option, although an Option is not a collection,
+  test("""Map in an Option, although an Option is not a collection,
       |  it is has some of the same attributes like map that will operate
       |  with its internals. To apply a map to a None will just render
       |  a None""".stripMargin) {
@@ -145,7 +142,10 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should contain(100 -> "One Hundred")
   }
 
-  test("foldLeft") {
+  test("""foldLeft will take two parameters group, the first
+      |  will contain a seed and then a function that will
+      |  aggregate the collection into one.""".stripMargin) {
+
     val result = List(1, 2, 3, 4, 5).foldLeft(1) { (total, next) =>
       println(s"total $total, next: $next")
       total * next
@@ -165,9 +165,11 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test(
-    """flatMap will not only apply the given function on all elements of a Traversable,
+    """flatMap will not only apply the given function on all
+      |  elements of a Traversable,
       |  but all elements within the elements and flatten the results""") {
-    pending
+    val result = List(1,2,3).flatMap(x => List(-x, x, x+1))
+    result should be (List(-1,1,2,-2,2,3,-3,3,4))
   }
 
   test( """flatMap of Options will filter out all Nones and Keep the Somes""") {
@@ -176,16 +178,14 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should be(List(2, 4))
   }
 
-  test(
-    """foreach will apply a function to all elements of a Traversable, but unlike
-      | the map function, it will not return anything
+  test("""foreach will apply a function to all elements of a Traversable,
+      | but unlike the map function, it will not return anything
       | since the return type is Unit, which
       | is like a void return type in Java, C++""".stripMargin) {
-    pending
+    List(1,2,3).foreach(println)
   }
 
-  test(
-    """groupBy will categorize a collection by a function, and return a
+  test("""groupBy will categorize a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
     val result = List("I see trees of green", "Red roses too",
       "I see them bloom",
@@ -196,24 +196,25 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should contain("see" -> 2)
   }
 
-  test(
-    """mkString will create a string from a
+  test("""mkString will create a string from a
       | collections elements, and offers
       | multiple ways to do so""".stripMargin) {
     val result = List("Foo", "Bar", "Baz").mkString("{", ",", "}")
     result should be("{Foo,Bar,Baz}")
   }
 
-  test(
-    """collect will apply a partial function to all elements
+  test("""collect will apply a partial function to all elements
       |  and will return a different collection.""".stripMargin) {
-    pending
+    val result = (1 to 5).collect{case i:Int if i % 2 == 0 => i * 15}
+    result should contain inOrder (30,60)
   }
 
-  test(
-    """scan is like a reduce but maintains a running total
+  test("""scan is like a reduce but maintains a running total
       |  with each iteration""".stripMargin) {
-    pending
+    val result = List(1, 2, 3, 4, 5).scan(1){ (total, next) =>
+      total * next
+    }
+    result should contain inOrder(1, 2, 6, 24, 120)
   }
 
   test("""zip will interweave two collections together leaving a tuple""") {
@@ -222,23 +223,20 @@ class FunctionsSpec extends FunSuite with Matchers {
     nums zip chars should contain inOrder((1, 'a'), (2, 'b'), (3, 'c'))
   }
 
-  test(
-    """view will not immediately evaluate a chain until a terminal
+  test("""view will not immediately evaluate a chain until a terminal
       |  operation is called, like reduce, count, or force""".stripMargin) {
     val result = (1 to 10000000).view.map(x => x * 4000).take(4).force.toList
     result should contain inOrder(4000,8000,12000,16000)
   }
 
-  test(
-    """sorted will sort the collection based on an implicit ordering
+  test("""sorted will sort the collection based on an implicit ordering
       |  and return that ordered collection""".stripMargin) {
     val sortedList = List("bassoon", "bass", "violin", "guitar", "cello").sorted
     sortedList should contain inOrder
       ("bass", "bassoon", "cello", "guitar", "violin")
   }
 
-  test(
-    """sortBy will also sort the collection based on an
+  test("""sortBy will also sort the collection based on an
       |  implicit rule, but will apply a function first""".stripMargin) {
 
     val names = List("Ella Fitzgerald",

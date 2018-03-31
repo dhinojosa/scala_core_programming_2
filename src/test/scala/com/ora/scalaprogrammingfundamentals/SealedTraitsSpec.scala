@@ -29,8 +29,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       .currentSpeedMetersPerHour should be(3) //should is a ScalaTest
   }
 
-  test(
-    """Just like Java 8 interfaces, you can have concrete
+  test("""Just like Java 8 interfaces, you can have concrete
       |  methods (known as default methods in Java)""".stripMargin) {
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
@@ -76,32 +75,37 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       ("Sent one statement 2", "Sent two statements 2")
   }
 
-  test(
-    """A sealed trait is a trait that will have children,
+  test("""A sealed trait is a trait that will have children,
       | but it will define all it's children and not one else will have the
       | ability to extend the number of children any further. All children
-      | must be produced within the same file""".stripMargin) {
+      | must be produced within the same file. This will also create what
+      | is called a union type if you are familiar with Haskell, Elm, F#,
+      | and other functional languages.""".stripMargin) {
     val tree: Node[Int] = Node(Leaf(5), Leaf(10))
     tree.left.asInstanceOf[Leaf[_]].value should be (5)
   }
 
   test(
-    """A popular sealed abstract class is Option[+T], Some[T], None, let's
-      | take a look at the API and try it out""".stripMargin) {
+    """You can also have sealed abstract classes, which will operate under
+      |  the same rules, the children must all be inside the same file,
+      |  and the children should be final. Why would you choose
+      |  one over the other? You can multiple inherit a trait and mixin traits.
+      |  Abstract classes offer stronger "is-a" relationships
+      |  A popular sealed abstract class is Option[+T], Some[T], None, let's
+      |  take a look at the API and try it out""".stripMargin) {
     val samMiddleName:Option[String] = Some("Howard")
     val dannoMiddleName:Option[String] = None
   }
 
-  //Union types
-
-  test(
-    """A popular sealed abstract class is Also List[A], ::,
+  test("""A popular sealed abstract class is Also List[A], ::,
       |and Nil let's take a look at the API.""".stripMargin) {
-    pending
+    val emptyList = Nil
+
+    val instantatedDoubleColon = ::(3, List(4,5))
+    instantatedDoubleColon should be (List(3,4,5))
   }
 
-  test(
-    """Sealed traits is also a good idea for pattern matching
+  test("""Sealed traits is also a good idea for pattern matching
       | exhaustiveness. The compiler will be able to recognize the subclasses
       | of all sealed traits.""".stripMargin) {
      val a:Tree[Int] = Node(Leaf(5), Leaf(10))
@@ -111,14 +115,5 @@ class SealedTraitsSpec extends FunSuite with Matchers {
        case Leaf(x) => s"Leaf has value of $x"
        case Node(left, right) => s"Node has value $left and $right"
      }
-  }
-
-  test(
-    """You can also have sealed abstract classes, which will operate under
-      |  the same rules, the children must all be inside the same file,
-      |  and the children should be final. Why would you choose
-      |  one over the other? You can multiple inherit a trait""".stripMargin) {
-    //no code
-    pending
   }
 }
