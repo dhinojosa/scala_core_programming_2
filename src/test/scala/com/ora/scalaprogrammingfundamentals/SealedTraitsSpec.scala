@@ -76,11 +76,11 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   }
 
   test("""A sealed trait is a trait that will have children,
-      | but it will define all it's children and not one else will have the
-      | ability to extend the number of children any further. All children
-      | must be produced within the same file. This will also create what
-      | is called a union type if you are familiar with Haskell, Elm, F#,
-      | and other functional languages.""".stripMargin) {
+      |  but it will define all it's children and not one else will have the
+      |  ability to extend the number of children any further. All children
+      |  must be produced within the same file. This will also create what
+      |  is called a union type if you are familiar with Haskell, Elm, F#,
+      |  and other functional languages.""".stripMargin) {
     val tree: Node[Int] = Node(Leaf(5), Leaf(10))
     tree.left.asInstanceOf[Leaf[_]].value should be (5)
   }
@@ -98,16 +98,16 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   }
 
   test("""A popular sealed abstract class is Also List[A], ::,
-      |and Nil let's take a look at the API.""".stripMargin) {
+      |  and Nil let's take a look at the API.""".stripMargin) {
     val emptyList = Nil
 
     val instantatedDoubleColon = ::(3, List(4,5))
     instantatedDoubleColon should be (List(3,4,5))
   }
 
-  test("""Sealed traits is also a good idea for pattern matching
-      | exhaustiveness. The compiler will be able to recognize the subclasses
-      | of all sealed traits.""".stripMargin) {
+  test("""Sealed traits are also a good idea for pattern matching
+      |  exhaustiveness. The compiler will be able to recognize the subclasses
+      |  of all sealed traits.""".stripMargin) {
      val a:Tree[Int] = Node(Leaf(5), Leaf(10))
 
      a match {
