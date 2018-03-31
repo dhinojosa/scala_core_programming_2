@@ -124,8 +124,8 @@ class CollectionsSpec extends FunSuite with Matchers {
 
   test(
     """A Set is a collection with unique items with no order. They can
-      | either be as HashSet which is stored is special type of collection
-      | called trie. This will have fast lookup, add, and remove""".stripMargin)
+      |  either be as HashSet which is stored is special type of collection
+      |  called trie. This will have fast lookup, add, and remove""".stripMargin)
   {
     val set = HashSet(1, 2, 3, 4, 5, 6, 8)
     set.contains(4) should be(true)

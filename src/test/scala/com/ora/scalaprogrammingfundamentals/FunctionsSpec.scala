@@ -106,8 +106,9 @@ class FunctionsSpec extends FunSuite with Matchers {
     newFunction.apply("Fellow", 100) should be("Fel")
   }
 
-  test("""map will apply the given function on all elements of a
-      |  Traversable and return a new collection of the result.""") {
+  test("""Map will apply the given function on all elements of a
+      |  Traversable and return a new collection
+      |  of the result.""".stripMargin) {
     val vector = Vector(1, 3, 4, 6)
     val result = vector.map(x => x * 4)
     result should be(List(4, 12, 16, 24)) //4
@@ -135,8 +136,8 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test(
     """We can also use a map on a scala Map, you have two choices,
-      | either map which takes the Tuples, or mapValues which just
-      | maps over the values.""".stripMargin) {
+      |  either map which takes the Tuples, or mapValues which just
+      |  maps over the values.""".stripMargin) {
     val mapStructure = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
     val result = mapStructure.map(t => t._1 * 100 -> (t._2 + " Hundred"))
     result should contain(100 -> "One Hundred")
@@ -167,7 +168,8 @@ class FunctionsSpec extends FunSuite with Matchers {
   test(
     """flatMap will not only apply the given function on all
       |  elements of a Traversable,
-      |  but all elements within the elements and flatten the results""") {
+      |  but all elements within the elements
+      |  and flatten the results""".stripMargin) {
     val result = List(1,2,3).flatMap(x => List(-x, x, x+1))
     result should be (List(-1,1,2,-2,2,3,-3,3,4))
   }
@@ -179,9 +181,9 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""foreach will apply a function to all elements of a Traversable,
-      | but unlike the map function, it will not return anything
-      | since the return type is Unit, which
-      | is like a void return type in Java, C++""".stripMargin) {
+      |  but unlike the map function, it will not return anything
+      |  since the return type is Unit, which
+      |  is like a void return type in Java, C++""".stripMargin) {
     List(1,2,3).foreach(println)
   }
 
@@ -197,8 +199,8 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""mkString will create a string from a
-      | collections elements, and offers
-      | multiple ways to do so""".stripMargin) {
+      |  collections elements, and offers
+      |  multiple ways to do so""".stripMargin) {
     val result = List("Foo", "Bar", "Baz").mkString("{", ",", "}")
     result should be("{Foo,Bar,Baz}")
   }
