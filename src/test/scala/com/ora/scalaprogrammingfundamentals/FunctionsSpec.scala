@@ -52,7 +52,7 @@ class FunctionsSpec extends FunSuite with Matchers {
   test(
     """A closure is a function that will "wrap" or "close"
       |  around an outside value.""".stripMargin) {
-    def createFunction(i:Int): Int => Int = {
+    def createFunction(i: Int): Int => Int = {
       (x: Int) => x + i
     }
 
@@ -65,7 +65,7 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  more arguments into parts so that they can be applied
       |  partially""".stripMargin) {
 
-    def foo(f:Int => Int) = f(40)
+    def foo(f: Int => Int) = f(40)
 
     val f: (Int, Int, Int) => Int = (x: Int, y: Int, z: Int) => x + y + z
     val fc: Int => Int => Int => Int = f.curried
@@ -88,7 +88,8 @@ class FunctionsSpec extends FunSuite with Matchers {
     val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = getFirstThreeLetters.compose(tupleFirst)
+    val newFunction: ((String, Int)) => String =
+      getFirstThreeLetters.compose(tupleFirst)
     newFunction("Fellow" -> 100) should be("Fel")
   }
 
@@ -100,7 +101,8 @@ class FunctionsSpec extends FunSuite with Matchers {
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = tupleFirst.andThen(getFirstThreeLetters)
+    val newFunction: ((String, Int)) => String = tupleFirst
+      .andThen(getFirstThreeLetters)
     newFunction.apply("Fellow", 100) should be("Fel")
   }
 
@@ -125,28 +127,41 @@ class FunctionsSpec extends FunSuite with Matchers {
   //Applicative = None
   //Monad = flatMap
 
-  test("Map in an Option") {
-    Some(10).map(x => x + 40) should be (Some(50))
+  test(
+    """Map in an Option, although an Option is not a collection,
+      |  it is has some of the same attributes like map that will operate
+      |  with its internals. To apply a map to a None will just render
+      |  a None""".stripMargin) {
+    Some(10).map(x => x + 40) should be(Some(50))
+    None.asInstanceOf[Option[Int]].map(x => x + 40) should be(None)
   }
 
-  test("Map on Map") {
+  test(
+    """We can also use a map on a scala Map, you have two choices,
+      | either map which takes the Tuples, or mapValues which just
+      | maps over the values.""".stripMargin) {
     val mapStructure = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
-    val result = mapStructure.map(t => t._1 + 100 -> t._2 + " Hundred")
-    result should contain (Map(100 -> "One Hundred"))
+    val result = mapStructure.map(t => t._1 * 100 -> (t._2 + " Hundred"))
+    result should contain(100 -> "One Hundred")
   }
 
   test("foldLeft") {
-    val result = List(1,2,3,4,5).foldLeft(1){(total, next) =>
+    val result = List(1, 2, 3, 4, 5).foldLeft(1) { (total, next) =>
       println(s"total $total, next: $next")
       total * next
     }
-    result should be (120)
+    result should be(120)
   }
 
-  test("""reduce will collapse all elements of a collection using a function.
-         |  It will start the first element as the 'seed' or 'accumulation"""
-    .stripMargin) {
-    pending
+  test(
+    """reduce will collapse all elements of a collection using a function.
+      |  It will start the first element as the 'seed' or 'accumulation"""
+      .stripMargin) {
+    val result = List(1, 2, 3, 4, 5).reduce { (total, next) =>
+      println(s"total $total, next: $next")
+      total * next
+    }
+    result should be(120)
   }
 
   test(
@@ -161,50 +176,78 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should be(List(2, 4))
   }
 
-  test("""foreach will apply a function to all elements of a Traversable, but unlike
-         | the map function, it will not return anything
-         | since the return type is Unit, which
-         | is like a void return type in Java, C++""".stripMargin) {
+  test(
+    """foreach will apply a function to all elements of a Traversable, but unlike
+      | the map function, it will not return anything
+      | since the return type is Unit, which
+      | is like a void return type in Java, C++""".stripMargin) {
     pending
   }
 
   test(
     """groupBy will categorize a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
+    val result = List("I see trees of green", "Red roses too",
+      "I see them bloom",
+      "for me and you")
+      .flatMap(w => w.split(" "))
+      .groupBy(w => w)
+      .mapValues(v => v.size)
+    result should contain("see" -> 2)
+  }
+
+  test(
+    """mkString will create a string from a
+      | collections elements, and offers
+      | multiple ways to do so""".stripMargin) {
+    val result = List("Foo", "Bar", "Baz").mkString("{", ",", "}")
+    result should be("{Foo,Bar,Baz}")
+  }
+
+  test(
+    """collect will apply a partial function to all elements
+      |  and will return a different collection.""".stripMargin) {
     pending
   }
 
-  test("""mkString will create a string from a
-      | collections elements, and offers multiple ways to do so""".stripMargin) {
+  test(
+    """scan is like a reduce but maintains a running total
+      |  with each iteration""".stripMargin) {
     pending
   }
 
-  test("""collect will apply a partial function to all elements
-          |  and will return a different collection.""".stripMargin){
-    pending
+  test("""zip will interweave two collections together leaving a tuple""") {
+    val nums = List(1, 2, 3, 4)
+    val chars = List('a', 'b', 'c')
+    nums zip chars should contain inOrder((1, 'a'), (2, 'b'), (3, 'c'))
   }
 
-  test("""scan is like a reduce but maintains a running total
-      |  with each iteration""".stripMargin){
-    pending
+  test(
+    """view will not immediately evaluate a chain until a terminal
+      |  operation is called, like reduce, count, or force""".stripMargin) {
+    val result = (1 to 10000000).view.map(x => x * 4000).take(4).force.toList
+    result should contain inOrder(4000,8000,12000,16000)
   }
 
-  test("""zip will interweave two collections together leaving a tuple"""){
-    pending
-  }
-
-  test("""view will not immediately evaluate a chain until a terminal
-      |  operation is called, like reduce, count, or force""".stripMargin){
-    pending
-  }
-
-  test("""sorted will sort the collection based on an implicit ordering
+  test(
+    """sorted will sort the collection based on an implicit ordering
       |  and return that ordered collection""".stripMargin) {
-    pending
+    val sortedList = List("bassoon", "bass", "violin", "guitar", "cello").sorted
+    sortedList should contain inOrder
+      ("bass", "bassoon", "cello", "guitar", "violin")
   }
 
-  test("""sortBy will also sort the collection based on an
+  test(
+    """sortBy will also sort the collection based on an
       |  implicit rule, but will apply a function first""".stripMargin) {
-    pending
+
+    val names = List("Ella Fitzgerald",
+      "Louis Armstrong",
+      "Albert Einstein",
+      "Tim Berners Lee",
+      "Nikola Tesla",
+      "Bob Marley").sortBy(s => s.split(" ").last)
+
+    names.take(2) should contain inOrder("Louis Armstrong", "Albert Einstein")
   }
 }
