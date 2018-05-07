@@ -184,4 +184,3 @@ local.properties
 *.class
 *.log
 .cache-tests
-.idea
