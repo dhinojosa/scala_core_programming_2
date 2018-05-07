@@ -84,21 +84,16 @@ class CollectionsSpec extends FunSuite with Matchers {
     """A stream can be a finite or an infinite collection.
       |  The construction can
       |  be done using recursion""".stripMargin) {
-    def continuousEvens(): Stream[BigInt] = {
-      def ce(n: BigInt): Stream[BigInt] = Stream.cons(n, ce(n + 2))
-      ce(2)
-    }
+    pending
+    def continuousEvens(): Stream[BigInt] = ???
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
   test(
     """Another way we can write the above Stream  is using is using the
       |  #:: operator""".stripMargin) {
-    def continuousEvens(): Stream[BigInt] = {
-      def ce(n: BigInt): Stream[BigInt] = n #:: ce(n + 2)
-      ce(2)
-    }
-
+    pending
+    def continuousEvens(): Stream[BigInt] = ???
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
@@ -116,6 +111,7 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  an in collection and an out collection. When out runs out, out
       |  becomes an in.reverse and out replaced with Nil. This is called a
       |  pivot""".stripMargin) {
+
     val queue = Queue.apply(1, 2, 3, 4)
     val result = queue.enqueue(5)
     result should be(Queue.apply(1, 2, 3, 4, 5))

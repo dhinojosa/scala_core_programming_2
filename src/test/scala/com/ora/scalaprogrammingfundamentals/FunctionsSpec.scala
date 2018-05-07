@@ -2,8 +2,6 @@ package com.ora.scalaprogrammingfundamentals
 
 import org.scalatest.{FunSuite, Matchers}
 
-//dhinojosa@evolutionnext.com
-
 class FunctionsSpec extends FunSuite with Matchers {
   test(
     """As a reminder from all those that took the beginner's course,
@@ -85,12 +83,10 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
-    val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
+    pending
+    val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String =
-      getFirstThreeLetters.compose(tupleFirst)
-    newFunction("Fellow" -> 100) should be("Fel")
   }
 
   test(
@@ -98,12 +94,9 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  then g is then applied. In the following example we
       |  recreate the compose but using andThen""".stripMargin) {
 
+    pending
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
-
-    val newFunction: ((String, Int)) => String = tupleFirst
-      .andThen(getFirstThreeLetters)
-    newFunction.apply("Fellow", 100) should be("Fel")
   }
 
   test("""Map will apply the given function on all elements of a
@@ -122,10 +115,6 @@ class FunctionsSpec extends FunSuite with Matchers {
       .toVector should contain inOrder(5, 15, 25, 35)
   }
 
-  //Functor = map
-  //Applicative = None
-  //Monad = flatMap
-
   test("""Map in an Option, although an Option is not a collection,
       |  it is has some of the same attributes like map that will operate
       |  with its internals. To apply a map to a None will just render
@@ -138,31 +127,20 @@ class FunctionsSpec extends FunSuite with Matchers {
     """We can also use a map on a scala Map, you have two choices,
       |  either map which takes the Tuples, or mapValues which just
       |  maps over the values.""".stripMargin) {
+    pending
     val mapStructure = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
-    val result = mapStructure.map(t => t._1 * 100 -> (t._2 + " Hundred"))
-    result should contain(100 -> "One Hundred")
   }
 
   test("""foldLeft will take two parameters group, the first
       |  will contain a seed and then a function that will
       |  aggregate the collection into one.""".stripMargin) {
-
-    val result = List(1, 2, 3, 4, 5).foldLeft(1) { (total, next) =>
-      println(s"total $total, next: $next")
-      total * next
-    }
-    result should be(120)
+      pending
   }
 
-  test(
-    """reduce will collapse all elements of a collection using a function.
+  test("""reduce will collapse all elements of a collection using a function.
       |  It will start the first element as the 'seed' or 'accumulation"""
       .stripMargin) {
-    val result = List(1, 2, 3, 4, 5).reduce { (total, next) =>
-      println(s"total $total, next: $next")
-      total * next
-    }
-    result should be(120)
+      pending
   }
 
   test(
@@ -170,11 +148,10 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  elements of a Traversable,
       |  but all elements within the elements
       |  and flatten the results""".stripMargin) {
-    val result = List(1,2,3).flatMap(x => List(-x, x, x+1))
-    result should be (List(-1,1,2,-2,2,3,-3,3,4))
+      pending
   }
 
-  test( """flatMap of Options will filter out all Nones and Keep the Somes""") {
+  test("""flatMap of Options will filter out all Nones and Keep the Somes""") {
     val list = List(1, 2, 3, 4, 5)
     val result = list.flatMap(it => if (it % 2 == 0) Some(it) else None)
     result should be(List(2, 4))
@@ -184,70 +161,46 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  but unlike the map function, it will not return anything
       |  since the return type is Unit, which
       |  is like a void return type in Java, C++""".stripMargin) {
-    List(1,2,3).foreach(println)
+    pending
   }
 
   test("""groupBy will categorize a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
-    val result = List("I see trees of green", "Red roses too",
-      "I see them bloom",
-      "for me and you")
-      .flatMap(w => w.split(" "))
-      .groupBy(w => w)
-      .mapValues(v => v.size)
-    result should contain("see" -> 2)
+    pending
   }
 
   test("""mkString will create a string from a
       |  collections elements, and offers
       |  multiple ways to do so""".stripMargin) {
-    val result = List("Foo", "Bar", "Baz").mkString("{", ",", "}")
-    result should be("{Foo,Bar,Baz}")
+    pending
   }
 
   test("""collect will apply a partial function to all elements
-      |  and will return a different collection.""".stripMargin) {
-    val result = (1 to 5).collect{case i:Int if i % 2 == 0 => i * 15}
-    result should contain inOrder (30,60)
+          |  and will return a different collection.""".stripMargin) {
+    pending
   }
 
   test("""scan is like a reduce but maintains a running total
       |  with each iteration""".stripMargin) {
-    val result = List(1, 2, 3, 4, 5).scan(1){ (total, next) =>
-      total * next
-    }
-    result should contain inOrder(1, 2, 6, 24, 120)
+    pending
   }
 
   test("""zip will interweave two collections together leaving a tuple""") {
-    val nums = List(1, 2, 3, 4)
-    val chars = List('a', 'b', 'c')
-    nums zip chars should contain inOrder((1, 'a'), (2, 'b'), (3, 'c'))
+    pending
   }
 
   test("""view will not immediately evaluate a chain until a terminal
       |  operation is called, like reduce, count, or force""".stripMargin) {
-    val result = (1 to 10000000).view.map(x => x * 4000).take(4).force.toList
-    result should contain inOrder(4000,8000,12000,16000)
+    pending
   }
 
   test("""sorted will sort the collection based on an implicit ordering
       |  and return that ordered collection""".stripMargin) {
-    val sortedList = List("bassoon", "bass", "violin", "guitar", "cello").sorted
-    sortedList should contain inOrder
-      ("bass", "bassoon", "cello", "guitar", "violin")
+    pending
   }
 
   test("""sortBy will also sort the collection based on an
       |  implicit rule, but will apply a function first""".stripMargin) {
-
-    val names = List("Ella Fitzgerald",
-      "Louis Armstrong",
-      "Albert Einstein",
-      "Tim Berners Lee",
-      "Nikola Tesla",
-      "Bob Marley").sortBy(s => s.split(" ").last)
-
-    names.take(2) should contain inOrder("Louis Armstrong", "Albert Einstein")
+    pending
   }
 }

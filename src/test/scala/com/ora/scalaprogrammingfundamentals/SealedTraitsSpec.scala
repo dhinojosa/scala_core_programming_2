@@ -5,17 +5,18 @@ import org.scalatest.{FunSuite, Matchers}
 import scala.collection.mutable.ArrayBuffer
 
 class SealedTraitsSpec extends FunSuite with Matchers {
-  test("A trait is analogous to an interface in Java") {
+  test("""A trait is analogous to an interface in Java, any method with
+      |  no concrete implementation is considered abstract. Any subsequent
+      |  inheritance of a trait is added using the keyword \"with\""""
+      .stripMargin) {
+
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
       def decreaseSpeed(ms: Int): Vehicle
       def currentSpeedMetersPerHour: Int
     }
 
-    trait Fun
-    trait FreshAir
-
-    case class Bicycle(currentSpeedMetersPerHour: Int) extends Vehicle with Fun with FreshAir {
+    case class Bicycle(currentSpeedMetersPerHour: Int) extends Vehicle {
       override def increaseSpeed(ms: Int): Vehicle =
         this.copy(currentSpeedMetersPerHour + ms)
 
@@ -30,7 +31,9 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   }
 
   test("""Just like Java 8 interfaces, you can have concrete
-      |  methods (known as default methods in Java)""".stripMargin) {
+      |  methods (known as default methods in Java). In the
+      |  example below: currentSpeedMilesPerHour""".stripMargin) {
+
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
       def decreaseSpeed(ms: Int): Vehicle
@@ -51,7 +54,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
     new Bicycle(4).currentSpeedMilesPerHour should be(0.002 +- .005)
   }
 
-  test("Traits are specifically called that just for mixing in functionality") {
+  test("""Traits are specifically called that just for mixing in functionality""") {
     trait Log {
       private val _log: ArrayBuffer[String] = ArrayBuffer[String]()
 
@@ -60,19 +63,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       def entries: ArrayBuffer[String] = _log
     }
 
-    val o = new Object with Log
-    o.log("Sent one statement")
-    o.log("Sent two statements")
-
-    o.entries should contain inOrder
-      ("Sent one statement", "Sent two statements")
-
-    val o2 = new Object with Log
-    o2.log("Sent one statement 2")
-    o2.log("Sent two statements 2")
-
-    o2.entries should contain inOrder
-      ("Sent one statement 2", "Sent two statements 2")
+    pending
   }
 
   test("""A sealed trait is a trait that will have children,
@@ -80,9 +71,9 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  ability to extend the number of children any further. All children
       |  must be produced within the same file. This will also create what
       |  is called a union type if you are familiar with Haskell, Elm, F#,
-      |  and other functional languages.""".stripMargin) {
-    val tree: Node[Int] = Node(Leaf(5), Leaf(10))
-    tree.left.asInstanceOf[Leaf[_]].value should be (5)
+      |  and other functional languages. Let us create Node, Leaf,
+      |  and Empty""".stripMargin) {
+    pending
   }
 
   test(
@@ -93,30 +84,17 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  Abstract classes offer stronger "is-a" relationships
       |  A popular sealed abstract class is Option[+T], Some[T], None, let's
       |  take a look at the API and try it out""".stripMargin) {
-    val samMiddleName:Option[String] = Some("Howard")
-    val dannoMiddleName:Option[String] = None
+    pending
   }
 
   test("""A popular sealed abstract class is Also List[A], ::,
       |  and Nil let's take a look at the API.""".stripMargin) {
-    val emptyList = Nil
-
-    val instantatedDoubleColon = ::(3, List(4,5))
-    instantatedDoubleColon should be (List(3,4,5))
+    pending
   }
 
   test("""Sealed traits are also a good idea for pattern matching
       |  exhaustiveness. The compiler will be able to recognize the subclasses
       |  of all sealed traits.""".stripMargin) {
-     val a:Tree[Int] = Node(Leaf(5), Leaf(10))
-
-    val result = a match {
-      case Empty => "Empty Tree"
-      case Leaf(x) => s"Leaf has value of $x"
-      case Node(Leaf(x), Leaf(y)) => s"Node has two leaves: $x and $y"
-      case Node(left, right) => s"Node has value $left and $right"
-    }
-
-    result should be ("Node has two leaves: 5 and 10")
+    pending
   }
 }
