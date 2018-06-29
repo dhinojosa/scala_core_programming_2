@@ -19,10 +19,12 @@ class CollectionsSpec extends FunSuite with Matchers {
     """We start our journey into collections with a List.
       |  An ordered collection. Per documentation this is
       |  suited for lifo stack like patterns""".stripMargin) {
-    val list = List.apply(40, 50, 60)
+    val list = List(40, 50, 60)
     val list2 = list :+ 70 //immutable
     val list3 = 1 +: list2 :+ 100
+
     list should contain inOrder(40, 50, 60)
+    list2 should contain inOrder(40, 50, 60, 70)
     list3 should contain inOrder(1, 40, 50, 60, 70, 100)
   }
 
@@ -84,16 +86,20 @@ class CollectionsSpec extends FunSuite with Matchers {
     """A stream can be a finite or an infinite collection.
       |  The construction can
       |  be done using recursion""".stripMargin) {
-    pending
-    def continuousEvens(): Stream[BigInt] = ???
+    def continuousEvens(): Stream[BigInt] = {
+      def ce(n:BigInt):Stream[BigInt] = Stream.cons(n, ce(n + 2))
+      ce(2)
+    }
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
   test(
     """Another way we can write the above Stream  is using is using the
       |  #:: operator""".stripMargin) {
-    pending
-    def continuousEvens(): Stream[BigInt] = ???
+    def continuousEvens(): Stream[BigInt] = {
+      def ce(n:BigInt):Stream[BigInt] = n #:: ce(n + 2)
+      ce(2)
+    }
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
