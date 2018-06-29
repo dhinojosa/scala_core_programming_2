@@ -96,7 +96,6 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
-    pending
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
