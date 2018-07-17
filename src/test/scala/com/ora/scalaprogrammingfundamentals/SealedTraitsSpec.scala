@@ -19,7 +19,8 @@ class SealedTraitsSpec extends FunSuite with Matchers {
     trait Fun
     trait FreshAir
 
-    case class Bicycle(currentSpeedMetersPerHour: Int) extends Vehicle with Fun with FreshAir {
+    case class Bicycle(currentSpeedMetersPerHour: Int)
+      extends Vehicle with Fun with FreshAir {
       override def increaseSpeed(ms: Int): Vehicle =
         this.copy(currentSpeedMetersPerHour + ms)
 
@@ -92,8 +93,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  is called a union type if you are familiar with Haskell, Elm, F#,
       |  and other functional languages. Let us create Node, Leaf,
       |  and Empty""".stripMargin) {
-    val tree:Node[Int] = Node(Leaf(4), Node(Leaf(10), Leaf(40)))
-    tree.left.asInstanceOf[Leaf[_]].value should be (4)
+     pending
   }
 
   test(
@@ -109,32 +109,16 @@ class SealedTraitsSpec extends FunSuite with Matchers {
 
     val danMiddleName:Option[String] = None
     danMiddleName.getOrElse("No Middle Name") should be ("No Middle Name")
-
   }
 
   test("""A popular sealed abstract class is Also List[A], ::,
       |  and Nil let's take a look at the API.""".stripMargin) {
-
-    //Union Type
-    val weirdWayOfCreatingAList  = new ::(1, List(1,2,3,4))
-    val emptyList:List[Int] = Nil
-    val oneElement = new ::(1,Nil)
-
-    List.apply(1,2,3,4)
+    pending
   }
 
   test("""Sealed traits are also a good idea for pattern matching
       |  exhaustiveness. The compiler will be able to recognize the subclasses
       |  of all sealed traits.""".stripMargin) {
-    val a:Tree[Int] = Node(Leaf(3), Leaf(5))
-
-    val result = a match {
-      case Empty => "Empty Tree"
-      case Leaf(x) => s"Leaf containing: $x"
-      case Node(Leaf(x), Leaf(y)) => s"Node with two leaves with values $x, $y"
-      case Node(x, y) => s"Node of $x, $y"
-    }
-
-    result should be ("Node with two leaves with values 3, 5")
+    pending
   }
 }

@@ -7,8 +7,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     """As a reminder from all those that took the beginner's course,
       |  a function really is an anonymous
       |  instantiation of a trait.""".stripMargin) {
-
-
+    
     val f1:String => Int = new Function1[String, Int] {
       override def apply(v1: String): Int = v1.length
     }
@@ -152,7 +151,9 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should contain (100 -> "One Hundred")
   }
 
-
+  test("""filter will choose the ones that meet a predicate""") {
+    List(1,2,3).filter(x => x % 2 != 0) should be (List(1,3))
+  }
 
   test("""flatMap will not only apply the given function on all
       |  elements of a Traversable,
@@ -163,23 +164,20 @@ class FunctionsSpec extends FunSuite with Matchers {
     val xs2: List[Int] = List(1,2,3).flatMap(x => List(-x, x, x+1))
 
     xs2 should be (List(-1,1,2,-2,2,3,-3,3,4))
-
   }
 
-  test("""flatMap is great for big data analysis, word count""".stripMargin) {
-
-    val lyrics: List[String] = List("I see trees of green", "Red roses too",
-      "I see them bloom", "For me an you", "and I think to myself",
-      "what a wonderful world")
-
-    val list: List[String] = lyrics
-      .flatMap(sent => sent.split(" "))
-      .map(_.toLowerCase)
-
-    val mapLetterNumOccur = list.groupBy(s => s.head).mapValues(xs => xs.size)
-    mapLetterNumOccur.get('w') should be (Some(3))
+  test(
+    """flatMap is great for big data analysis, word count.
+      |  Here we will also use groupBy. GroupBy will categorize
+      |  a collection by a function, and return a
+      |  map where the keys were derived by that function""".stripMargin) {
+     pending
   }
 
+  test("""flatMap also wonderful for digging
+      |  into one-to-many object graphs""".stripMargin) {
+    pending
+  }
 
   test("""flatMap of Options will filter out all Nones and Keep the Somes""") {
     val list = List(1, 2, 3, 4, 5)
@@ -194,10 +192,6 @@ class FunctionsSpec extends FunSuite with Matchers {
     List(1,2,3) map println
   }
 
-  test("""groupBy will categorize a collection by a function, and return a
-      |  map where the keys were derived by that function""".stripMargin) {
-    //see above flatMap
-  }
 
   test("""mkString will create a string from a
       |  collections elements, and offers
@@ -206,10 +200,6 @@ class FunctionsSpec extends FunSuite with Matchers {
     List(1,2,3).mkString("<", ":", ">") should be ("<1:2:3>")
   }
 
-
-  test("""filter will choose the ones that meet a predicate""") {
-    List(1,2,3).filter(x => x % 2 != 0) should be (List(1,3))
-  }
   test("""collect will apply a partial function to all elements
           |  and will return a different collection. It is a
           |  combo of map and filter""".stripMargin) {

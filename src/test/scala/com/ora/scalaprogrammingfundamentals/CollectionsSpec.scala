@@ -93,8 +93,7 @@ class CollectionsSpec extends FunSuite with Matchers {
     continuousEvens().take(5) should contain inOrder(2, 4, 6, 8, 10)
   }
 
-  test(
-    """Another way we can write the above Stream  is using is using the
+  test("""Another way we can write the above Stream is using is using the
       |  #:: operator""".stripMargin) {
     def continuousEvens(): Stream[BigInt] = {
       def ce(n:BigInt):Stream[BigInt] = n #:: ce(n + 2)
