@@ -2,6 +2,8 @@ package com.ora.scalaprogrammingfundamentals
 
 import org.scalatest.{FunSuite, Matchers}
 
+import scala.collection.immutable
+
 class FunctionsSpec extends FunSuite with Matchers {
   test(
     """As a reminder from all those that took the beginner's course,
@@ -12,19 +14,15 @@ class FunctionsSpec extends FunSuite with Matchers {
       override def apply(v1: String): Int = v1.length
     }
 
-    def f15(s:String) = s.length
-
-    val f2:CharSequence => AnyVal = new Function1[CharSequence, AnyVal] {
-      override def apply(v1: CharSequence): AnyVal = v1.length
-    }
+    def foo(s:String) = s.length
+    val f15: String => Int = foo _
 
     f1("Hello") should be(5)
-    f2("Hello") should be(5)
   }
 
   test("The above can be whittled down to the following:") {
     val f = (s: String) => s.length
-    f.apply("Zanzibar") should be(8)
+    f("Zanzibar") should be(8)
   }
 
   test(
@@ -39,7 +37,7 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  on the right hand side you can trim the left hand side
       |  with syntactical tricks like use the placeholder""".stripMargin) {
     val f: String => Int = _.length
-    f.apply("Andorra") should be(7)
+    f("Andorra") should be(7)
   }
 
   test(
@@ -51,8 +49,8 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  that you can turn off with """.stripMargin) {
 
     import scala.language.postfixOps
-    val f: Int => Int = (5+) //Take time with us.
-    f.apply(3) should be(8)
+    val f: Int => Int = (5+)
+    f(3) should be(8)
   }
 
   test(
@@ -62,11 +60,11 @@ class FunctionsSpec extends FunSuite with Matchers {
       (x: Int) => x + i
     }
 
-    val intToInt1: Int => Int = createFunction(5)
-    val intToInt2: Int => Int = createFunction(10)
+    val add5Function: Int => Int = createFunction(5)
+    val add10Function: Int => Int = createFunction(10)
 
-    Vector(1, 2, 3).map(intToInt1) should contain inOrder(6, 7, 8)
-    Vector(1, 2, 3).map(intToInt2) should contain inOrder(11, 12, 13)
+    Vector(1, 2, 3).map(add5Function) should contain inOrder(6, 7, 8)
+    Vector(1, 2, 3).map(add10Function) should contain inOrder(11, 12, 13)
   }
 
   test(
@@ -84,7 +82,9 @@ class FunctionsSpec extends FunSuite with Matchers {
     val f3: Int = f2(10)
     f3 should be(17)
 
-    val manuallyCurried: Int => Int => Int => Int = (x: Int) => (y: Int) => (z: Int) => x + y + z
+    val manuallyCurried: Int => Int => Int => Int =
+         (x: Int) => (y: Int) => (z: Int) => x + y + z
+
     manuallyCurried(3)(4)(10) should be(17)
   }
 
@@ -95,17 +95,20 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
-    val tupleFirst = (t: (String, Int)) => t._1
+
+    //a = g(x)
+    //b = f(g(x)) = f(a)
+
+    val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String =
-      getFirstThreeLetters.compose(tupleFirst)
+    val newFunction: ((String, Int)) => String = getFirstThreeLetters.compose(tupleFirst)
 
     newFunction(("Arizona", 3)) should be ("Ari")
   }
 
   test(
-    """andThen is g(f(x)).  f(x) is applied first and
+    """andThen is g(f(x)). f(x) is applied first and
       |  then g is then applied. In the following example we
       |  recreate the compose but using andThen""".stripMargin) {
 
@@ -114,15 +117,14 @@ class FunctionsSpec extends FunSuite with Matchers {
 
     val newFunction: ((String, Int)) => String =
       tupleFirst.andThen(getFirstThreeLetters)
-
-
   }
 
   test("""Map will apply the given function on all elements of a
       |  Traversable and return a new collection
       |  of the result.""".stripMargin) {
+    import scala.language.postfixOps
     val vector = Vector(1, 3, 4, 6)
-    val result = vector.map(x => x * 4)
+    val result = vector.map(4*)
     result should be(List(4, 12, 16, 24)) //4
   }
 
@@ -162,7 +164,6 @@ class FunctionsSpec extends FunSuite with Matchers {
 
     val xs: List[Int] = List(1,2,3,4,5).map(x => x + 3)
     val xs2: List[Int] = List(1,2,3).flatMap(x => List(-x, x, x+1))
-
     xs2 should be (List(-1,1,2,-2,2,3,-3,3,4))
   }
 
@@ -171,12 +172,37 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  Here we will also use groupBy. GroupBy will categorize
       |  a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
-     pending
+
+    val lyrics = List("I see trees of green",
+                      "Red roses too",
+                      "I see them bloom",
+                      "For me and you",
+                      "and I think to myself",
+                      "What a wonderful world")
+
+    val stringses: Seq[String] = lyrics.flatMap(str => str.split(" "))
+    val map = stringses.map(s => s.toLowerCase).groupBy(s => s.head)
+    val maybeSeq: Option[Seq[String]] = map.get('s')
+    maybeSeq should be (Some(Seq("see", "see")))
   }
 
   test("""flatMap also wonderful for digging
       |  into one-to-many object graphs""".stripMargin) {
-    pending
+    class Employee(val firstName:String, val lastName:String)
+    class Manager(firstName:String, lastName:String, val employees:List[Employee])
+      extends Employee(firstName, lastName)
+
+    val employees1 = List[Employee](new Employee("Simon", "Simons"),
+                          new Employee("Roger", "Japan"))
+
+    val employees2 = List[Employee](new Employee("Anne", "Norway"),
+                          new Employee("Yasmina", "Greco"),
+                          new Employee("Carlos", "Canada"))
+
+    val manager1 = new Manager("Bjarne", "Strousoup", employees1)
+    val manager2 = new Manager("Grace", "Hopper", employees2)
+
+    val result: Seq[Employee] = List(manager1, manager2).flatMap(ma => ma.employees)
   }
 
   test("""flatMap of Options will filter out all Nones and Keep the Somes""") {
@@ -214,7 +240,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     val tripleOdds:PartialFunction[Int, Int] = {case x if x % 2 != 0 => x * 3}
 
     List(1,2,3).collect{case x if x % 2 == 0 => x * 2} should be (List(4))
-    List(1,2,3).collect(doubleEvens2) should be (List(4))
+    List(1,2,3).collect(doubleEvens) should be (List(4))
   }
 
   test("""scan is like a reduce but maintains a running total
@@ -236,11 +262,21 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should be (10)
   }
 
+  test("""foldRight will take two parameters group, the first
+         |  will contain a seed and then a function that will
+         |  aggregate the collection into one, but do so coming
+         |  in from the right hand side.""".stripMargin) {
+    val result = List(1,2,3,4).foldRight(0){(next, total) =>
+      println(s"total: $total, next: $next")
+      total + next}
+
+    result should be (10)
+  }
+
   test("""reduce will collapse all elements of a collection using a function.
          |  It will start the first element as the 'seed' or 'accumulation"""
     .stripMargin) {
-    val result = List(1,2,3,4)
-      .reduce{(total, next) =>
+    val result = List(1,2,3,4).reduce{(total, next) =>
         println(s"total: $total, next: $next");
         total + next}
 
@@ -258,14 +294,15 @@ class FunctionsSpec extends FunSuite with Matchers {
       .view
       .map{i => println(i);i * 10}
       .take(3)
-      .toList
+      .toList //terminal operation
 
     result should be (List(10, 20, 30))
   }
 
   test("""sorted will sort the collection based on an implicit ordering
       |  and return that ordered collection""".stripMargin) {
-    List("One", "Two", "Three", "Four").sorted should be (List("Four", "One", "Three", "Two"))
+    val xs = List("One", "Two", "Three", "Four").sorted
+    xs should be (List("Four", "One", "Three", "Two"))
   }
 
   test("""sortBy will also sort the collection based on an

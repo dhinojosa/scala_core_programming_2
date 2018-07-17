@@ -19,7 +19,7 @@ class CollectionsSpec extends FunSuite with Matchers {
     """We start our journey into collections with a List.
       |  An ordered collection. Per documentation this is
       |  suited for lifo stack like patterns""".stripMargin) {
-    val list = List(40, 50, 60)
+    val list = List.apply(40, 50, 60)
     val list2 = list :+ 70 //immutable
     val list3 = 1 +: list2 :+ 100
 
@@ -148,12 +148,12 @@ class CollectionsSpec extends FunSuite with Matchers {
   }
 
   test("""A Map is a collection of pairs, also known as Tuple2""".stripMargin) {
-    val map = Map.apply(1 -> "One", 2 -> "Two", 3 -> "Three")
+    val map = Map(1 -> "One", 2 -> "Two", 3 -> "Three")
     map.get(2) should be(Some("Two"))
     val result = map + (4 -> "Four")
     result.get(4) should be(Some("Four"))
 
-    a[NoSuchElementException] should be thrownBy {
+    a[NoSuchElementException] should be thrownBy { //ScalaTest
       result.apply(10)
     }
   }
@@ -166,10 +166,12 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  from a method. Here is a ListBuffer which allows you to create a
       |  mutable List changing what you need. Note the API differences
       |  with immutable.""".stripMargin) {
+
     val ab = ArrayBuffer[Int](10, 20)
     ab += 30
     ab += 40
     ab.prepend(5)
+
     ab should be(ArrayBuffer(5, 10, 20, 30, 40))
   }
 }

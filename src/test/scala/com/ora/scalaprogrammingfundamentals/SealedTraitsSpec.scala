@@ -21,6 +21,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
 
     case class Bicycle(currentSpeedMetersPerHour: Int)
       extends Vehicle with Fun with FreshAir {
+
       override def increaseSpeed(ms: Int): Vehicle =
         this.copy(currentSpeedMetersPerHour + ms)
 
@@ -28,10 +29,11 @@ class SealedTraitsSpec extends FunSuite with Matchers {
         this.copy(currentSpeedMetersPerHour - ms)
     }
 
+
     Bicycle(1)
       .increaseSpeed(3)
       .decreaseSpeed(1)
-      .currentSpeedMetersPerHour should be(3) //should is a ScalaTest
+      .currentSpeedMetersPerHour should be (3) //should is a ScalaTest
   }
 
   test("""Just like Java 8 interfaces, you can have concrete
@@ -87,13 +89,31 @@ class SealedTraitsSpec extends FunSuite with Matchers {
   }
 
   test("""A sealed trait is a trait that will have children,
-      |  but it will define all it's children and not one else will have the
+      |  but it will define all it's children and no one else will have the
       |  ability to extend the number of children any further. All children
       |  must be produced within the same file. This will also create what
-      |  is called a union type if you are familiar with Haskell, Elm, F#,
-      |  and other functional languages. Let us create Node, Leaf,
+      |  is called a union type/sum type if you are familiar with Haskell, Elm, F#,
+      |  and other pure functional languages. Let us create Node, Leaf,
       |  and Empty""".stripMargin) {
-     pending
+
+     val a:Node[Int] = Node(Leaf(1), Node(Leaf(2), Leaf(4)))
+     a.left.asInstanceOf[Leaf[_]].value should be (1)
+  }
+
+  test("""Sealed traits are also a good idea for pattern matching
+         |  exhaustiveness. The compiler will be able to recognize the subclasses
+         |  of all sealed traits.""".stripMargin) {
+
+    val a:Tree[Int] = Node(Leaf(1), Node(Leaf(2), Leaf(4)))
+
+    val result = a match {
+      case Empty => "Empty"
+      case Leaf(x) => s"Leaf of value $x"
+      case Node(Leaf(x), Leaf(y)) => s"Two leaves: $x, $y"
+      case Node(l, r) => s"Node of $l and $r"
+    }
+
+    result should be ("Node of Leaf(1) and Node(Leaf(2),Leaf(4))")
   }
 
   test(
@@ -104,6 +124,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  Abstract classes offer stronger "is-a" relationships
       |  A popular sealed abstract class is Option[+T], Some[T], None, let's
       |  take a look at the API and try it out""".stripMargin) {
+
     val middleName:Option[String] = Some("Diego")
     middleName.getOrElse("No Middle Name") should be ("Diego")
 
@@ -113,12 +134,7 @@ class SealedTraitsSpec extends FunSuite with Matchers {
 
   test("""A popular sealed abstract class is Also List[A], ::,
       |  and Nil let's take a look at the API.""".stripMargin) {
-    pending
-  }
-
-  test("""Sealed traits are also a good idea for pattern matching
-      |  exhaustiveness. The compiler will be able to recognize the subclasses
-      |  of all sealed traits.""".stripMargin) {
-    pending
+       val myList = new ::(1, Nil)
+       myList should be (List(1))
   }
 }
