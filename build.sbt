@@ -1,4 +1,4 @@
-name := "scala_programming_fundamentals_2"
+name := "scala_core_programming_2"
 
 version := "1.0-SNAPSHOT"
 

@@ -1,8 +1,6 @@
-package com.ora.scalaprogrammingfundamentals
+package com.ora.scalacoreprogramming
 
 import org.scalatest.{FunSuite, Matchers}
-
-import scala.collection.immutable
 
 class FunctionsSpec extends FunSuite with Matchers {
   test(
@@ -67,6 +65,18 @@ class FunctionsSpec extends FunSuite with Matchers {
     Vector(1, 2, 3).map(add10Function) should contain inOrder(11, 12, 13)
   }
 
+  test("""Lab: Create a method called lessThan that accepts an integer, we'll call it x,
+      |  and returns a function that given another Int, we'll call it y,
+      |  determines if y is less than x.  Now. Create two functions or methods called
+      |  isFreezingCelcius and isFreezingFahrenheit that takes an int and uses
+      |  lessThan to determine if a given Int temperature is freezing.
+      |  Celcius freezing temperature is 0, Fahrenheit is 32.""".stripMargin) {
+
+    pending
+
+    def lessThan(x:Int):Int => Boolean = ???
+  }
+
   test(
     """Closure have some particular implications. One such implication
       |  is called currying. Currying will break a function of one or
@@ -118,6 +128,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     val newFunction: ((String, Int)) => String =
       tupleFirst.andThen(getFirstThreeLetters)
   }
+
 
   test("""Map will apply the given function on all elements of a
       |  Traversable and return a new collection
@@ -309,5 +320,65 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  implicit rule, but will apply a function first""".stripMargin) {
     val result = List((1,"Foo"), (2, "Bar"), (3, "Baz")).sortBy(t => t._2)
     result should be (List((2, "Bar"), (3, "Baz"), (1, "Foo")))
+  }
+
+  test("""Lab: Functional challenge. Using the fuctions we covered, write
+      |  factorial functionally. No loops, no recursion. Hint: Most of the
+      |  methods in BigInt are the same as Int so you can keep it simple.
+      |  """.stripMargin) {
+
+    pending
+
+    def factorial(x:BigInt):BigInt = ???
+
+    Stream.from(1)
+          .map(x => factorial(x))
+          .take(5)
+          .toList shouldBe inOrder (1,2,6,24,120,720)
+  }
+
+  test("""Advanced Lab (If time remains): create a grid. If provided a size,
+      |   create a grid with (size x size) dimensions. See the test for what is
+      |   expected. You will need to look through the API for ways to do this.
+      |   There is a method we haven't covered yet. If you give up,
+      |   the answer is available here, but try your best:
+      |   https://bit.ly/2zxPS9k """.stripMargin) {
+
+    pending
+
+    def grid(size:Int):String = ???
+
+    grid(2) should be (
+      """1,2
+        |3,4""".stripMargin)
+
+    grid(3) should be (
+      """1,2,3
+        |4,5,6
+        |7,8,9""".stripMargin
+    )
+
+    grid(4) should be (
+      """01,02,03,04
+        |05,06,07,08
+        |09,10,11,12
+        |13,14,15,16""".stripMargin
+    )
+  }
+
+  test("""Super Advanced Lab: No way you are going to solve this during class.
+      |  Given the following cube:
+      |
+      |  TODD
+      |  OMAR
+      |  DAVE
+      |  DREW
+      |
+      |  Notice that TODD is across in the first row and down in the first
+      |  column. Notice how OMAR is across on 2nd row and down on 2nd column
+      |  Notice the same for DAVE and DREW. Find the female equivalent cube that
+      |  works the same way. Find a list of female names on the web. Use
+      |  functional programming, NOT imperative programming.""".stripMargin) {
+    pending
   }
 }

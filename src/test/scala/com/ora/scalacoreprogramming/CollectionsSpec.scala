@@ -1,4 +1,4 @@
-package com.ora.scalaprogrammingfundamentals
+package com.ora.scalacoreprogramming
 
 import java.time.LocalDate
 

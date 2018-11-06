@@ -1,4 +1,4 @@
-package com.ora.scalaprogrammingfundamentals
+package com.ora.scalacoreprogramming
 
 import org.scalatest.{FunSuite, Matchers}
 
@@ -136,5 +136,14 @@ class SealedTraitsSpec extends FunSuite with Matchers {
       |  and Nil let's take a look at the API.""".stripMargin) {
        val myList = new ::(1, Nil)
        myList should be (List(1))
+  }
+
+  test("""Lab: (If there is time): Research Try or Either,
+      |  research either of them in the Scala API,
+      |  and put a sample in this test to verify your conclusions.  Notice
+      |  that they may either be a sealed abstract class or a sealed trait.
+      |  Given your knowledge of this you should be confident in how they work,
+      |  even if you haven't used them before.""".stripMargin) {
+    pending
   }
 }
